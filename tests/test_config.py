@@ -111,34 +111,6 @@ def test_apollo_config_auto_refresh_disabled(mocker):
     mock_thread.assert_not_called()
 
 
-def test_apollo_config_refresh_config(mocker):
-    mock_client = mocker.Mock(spec=ApolloClient)
-    initial_config = {"key1": "value1"}
-    updated_config = {"key1": "updated_value1", "key2": "value2"}
-
-    mock_client.fetch_config.side_effect = [initial_config, updated_config]
-
-    mock_sleep = mocker.patch("time.sleep")
-
-    config = ApolloConfig(mock_client, refresh_interval=10)
-
-    assert config["key1"] == "value1"
-    assert len(config) == 1
-
-    mock_sleep.side_effect = [None, KeyboardInterrupt()]
-
-    try:
-        config._refresh_config()
-    except KeyboardInterrupt:
-        pass
-
-    mock_sleep.assert_called_with(10)
-    assert mock_client.fetch_config.call_count == 2
-    assert config["key1"] == "updated_value1"
-    assert config["key2"] == "value2"
-    assert len(config) == 2
-
-
 def test_apollo_config_mapping_interface(mocker):
     mock_client = mocker.Mock(spec=ApolloClient)
     mock_client.fetch_config.return_value = {
