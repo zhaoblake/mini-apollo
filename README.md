@@ -1,2 +1,2 @@
-# mini-apollo
-A light weight Apollo Config SDK for Python.
+# Mini Apollo
+A lightweight Apollo Config SDK for Python.
